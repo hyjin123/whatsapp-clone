@@ -1,4 +1,4 @@
-import React from "react";
+import React, { use } from "react";
 import styled from "styled-components";
 import { Avatar, IconButton } from "@mui/material";
 import ChatIcon from "@mui/icons-material/Chat";
@@ -6,20 +6,44 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import SearchIcon from "@mui/icons-material/Search";
 import { Button } from "@mui/material";
 import * as EmailValidator from "email-validator";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { useCollection } from "react-firebase-hooks/firestore";
 
 function Sidebar() {
+  const [user] = useAuthState(auth);
+  const userChatRef = db
+    .collection("chats")
+    .where("users", "array-contains", user.email);
+  const [chatsSnapshot] = useCollection(userChatRef);
+
   const createChat = () => {
     const input = prompt(
       "Please enter an email address for the user you wish to chat with"
     );
 
     if (!input) return null;
+    console.log(chatsSnapshot);
 
     // this checks if the email is in correct format or not
-    if (EmailValidator.validate(input)) {
+    if (
+      EmailValidator.validate(input) &&
+      !chatAlreadyExists(input) &&
+      input !== user.email
+    ) {
       // we need to push the chat into database into "chats" collection
+      db.collection("chats").add({
+        users: [user.email, input],
+      });
     }
+  };
+
+  // check to see if the chat already exists
+  const chatAlreadyExists = (recipientEmail) => {
+    return !!chatsSnapshot?.docs.find(
+      (chat) =>
+        chat.data().users.find((user) => user === recipientEmail)?.length > 0
+    );
   };
 
   return (
@@ -41,7 +65,7 @@ function Sidebar() {
         <SearchInput placeholder="Search in chats" />
       </Search>
 
-      <SidebarButton onPress={createChat}>Start a new chat</SidebarButton>
+      <SidebarButton onClick={createChat}>Start a new chat</SidebarButton>
 
       {/* List of chats */}
     </Container>
