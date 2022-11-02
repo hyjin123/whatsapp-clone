@@ -5,6 +5,7 @@ import ChatIcon from "@mui/icons-material/Chat";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import SearchIcon from "@mui/icons-material/Search";
 import { Button } from "@mui/material";
+import * as EmailValidator from "email-validator";
 
 function Sidebar() {
   const createChat = () => {
@@ -13,6 +14,11 @@ function Sidebar() {
     );
 
     if (!input) return null;
+
+    // this checks if the email is in correct format or not
+    if (EmailValidator.validate(input)) {
+      // we need to push the chat into database into "chats" collection
+    }
   };
 
   return (
@@ -56,7 +62,7 @@ const Header = styled.div`
   align-items: center;
   padding: 15px;
   height: 80px;
-  border-bottom: 1px solid #dcdcdc;
+  border-bottom: 1px solid #ededed;
 `;
 
 const UserAvatar = styled(Avatar)`
@@ -86,7 +92,7 @@ const SidebarButton = styled(Button)`
   color: black;
   /* &&& increases the specificity, over the material ui styling */
   &&& {
-    border-top: 1px solid #dcdcdc;
-    border-bottom: 1px solid #dcdcdc;
+    border-top: 1px solid #ededed;
+    border-bottom: 1px solid #ededed;
   }
 `;
