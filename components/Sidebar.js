@@ -9,6 +9,7 @@ import * as EmailValidator from "email-validator";
 import { auth, db } from "../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollection } from "react-firebase-hooks/firestore";
+import Chat from "./Chat";
 
 function Sidebar() {
   const [user] = useAuthState(auth);
@@ -23,7 +24,6 @@ function Sidebar() {
     );
 
     if (!input) return null;
-    console.log(chatsSnapshot);
 
     // this checks if the email is in correct format or not
     if (
@@ -46,10 +46,11 @@ function Sidebar() {
     );
   };
 
+  console.log(chatsSnapshot?.docs);
   return (
     <Container>
       <Header>
-        <UserAvatar onClick={() => auth.signOut()} />
+        <UserAvatar src={user.photoURL} onClick={() => auth.signOut()} />
         <IconsContainer>
           <IconButton>
             <ChatIcon />
@@ -68,6 +69,9 @@ function Sidebar() {
       <SidebarButton onClick={createChat}>Start a new chat</SidebarButton>
 
       {/* List of chats */}
+      {chatsSnapshot?.docs.map((chat) => (
+        <Chat key={chat.id} id={chat.id} users={chat.data().users} />
+      ))}
     </Container>
   );
 }
