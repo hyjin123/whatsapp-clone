@@ -1,4 +1,4 @@
-import React, { use } from "react";
+import React from "react";
 import styled from "styled-components";
 import { Avatar, IconButton } from "@mui/material";
 import ChatIcon from "@mui/icons-material/Chat";
@@ -46,7 +46,6 @@ function Sidebar() {
     );
   };
 
-  console.log(chatsSnapshot?.docs);
   return (
     <Container>
       <Header>
@@ -79,7 +78,21 @@ function Sidebar() {
 export default Sidebar;
 
 // styled component
-const Container = styled.div``;
+const Container = styled.div`
+  flex: 0.45;
+  border-right: 1px solid #ededed;
+  height: 100vh;
+  min-width: 300px;
+  max-width: 350px;
+  overflow-y: scroll;
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+`;
 
 const Header = styled.div`
   display: flex;
