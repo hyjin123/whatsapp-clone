@@ -36,7 +36,7 @@ function ChatScreen({ chat, messages }) {
       // console.log(messagesSnapshot.docs[0].id);
       // console.log(messagesSnapshot.docs[0].data());
       // console.log({ ...messagesSnapshot.docs[0]?.data() });
-      return messagesSnapshot.docs.map((message) => {
+      return messagesSnapshot.docs.map((message) => (
         <Message
           key={message.id}
           user={message.data().user}
@@ -44,8 +44,8 @@ function ChatScreen({ chat, messages }) {
             ...message.data(),
             timestamp: message.data().timestamp?.toDate().getTime(),
           }}
-        />;
-      });
+        />
+      ));
     } else {
       // before we reach the page, this is server-side rendering
       return JSON.parse(messages).map((message) => (

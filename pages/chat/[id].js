@@ -25,7 +25,7 @@ function Chat({ chat, messages }) {
 
 export default Chat;
 
-// This is server side rendering, kind of confused on this
+// This is server side rendering, this page will be pre-rendered with the props
 export async function getServerSideProps(context) {
   const ref = db.collection("chats").doc(context.query.id);
 
