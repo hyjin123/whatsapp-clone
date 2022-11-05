@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import styled from "styled-components";
 import { auth, db } from "../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -18,6 +18,7 @@ function ChatScreen({ chat, messages }) {
   const [user] = useAuthState(auth);
   const [input, setInput] = useState("");
   const router = useRouter();
+  const endOfMessagesRef = useRef(null);
 
   // console.log("this is user", chat);
   // console.log("this is message", JSON.parse(messages)[0]?.message);
@@ -37,6 +38,13 @@ function ChatScreen({ chat, messages }) {
       .collection("users")
       .where("email", "==", getRecipientEmail(chat.users, user))
   );
+
+  const ScrollToBottom = () => {
+    endOfMessagesRef.current.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
 
   const showMessages = () => {
     // as soon as client is connected, it will fetch the real time information
@@ -83,6 +91,8 @@ function ChatScreen({ chat, messages }) {
 
     // reset the input state
     setInput("");
+    // Scrolls to bottom whenever message is sent
+    ScrollToBottom();
   };
 
   const recipient = recipientSnapshot?.docs?.[0]?.data();
@@ -123,7 +133,7 @@ function ChatScreen({ chat, messages }) {
       <MessageContainer>
         {showMessages()}
 
-        <EndOfMessage />
+        <EndOfMessage ref={endOfMessagesRef} />
       </MessageContainer>
       <InputContainer>
         <InsertEmoticonIcon />
@@ -195,4 +205,6 @@ const MessageContainer = styled.div`
   min-height: 90vh;
 `;
 
-const EndOfMessage = styled.div``;
+const EndOfMessage = styled.div`
+  margin-bottom: 60px;
+`;
